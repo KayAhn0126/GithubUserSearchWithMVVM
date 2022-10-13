@@ -9,7 +9,7 @@ import Combine
 import Kingfisher
 
 class DetailViewController: UIViewController {
-    @Published var userInfo: DetailSearchResult?
+    var viewModel: DetailViewModel!
     var detailSubscription = Set<AnyCancellable>()
     
     @IBOutlet weak var thumbnail: UIImageView!
@@ -24,33 +24,29 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel = DetailViewModel()
         setupUI()
         bind()
     }
     
     private func bind() {
-        $userInfo
+        viewModel.userInfo
             .receive(on: RunLoop.main)
             .sink { [unowned self] user in
-                self.configureCurrentView(user)
+                self.nameLabel.text = self.viewModel.nameLabel
+                self.loginLabel.text = self.viewModel.loginLabel
+                self.followerLabel.text = self.viewModel.followerLabel
+                self.followingLabel.text = self.viewModel.followingLabel
+                self.firstDateLabel.text = self.viewModel.firstDateLabel
+                self.latestUpdateLabel.text = self.viewModel.latestUpdateLabel
+                self.companyLabel.text = self.viewModel.companyLabel
+                self.locationLabel.text = self.viewModel.locationLabel
+                self.thumbnail.kf.setImage(with: self.viewModel.avatarUrl)
             }
             .store(in: &detailSubscription)
     }
     
     private func setupUI() {
         thumbnail.layer.cornerRadius = 80
-    }
-
-    private func configureCurrentView(_ user: DetailSearchResult?) {
-        guard let user = user else { return }
-        self.nameLabel.text = "Name : \(user.name ?? "Secret!")"
-        self.loginLabel.text = "Github id : " + user.login
-        self.followerLabel.text = "followers : \(user.followers)"
-        self.followingLabel.text = "following : \(user.following)"
-        self.firstDateLabel.text = "first date : \(user.firstDate)"
-        self.latestUpdateLabel.text = "latest update : \(user.latestupdateDate)"
-        self.companyLabel.text = "company : \(user.company ?? "still studying!")"
-        self.locationLabel.text = "location : \(user.location ?? "somewhere on Earth")"
-        self.thumbnail.kf.setImage(with: user.avatarUrl)
     }
 }

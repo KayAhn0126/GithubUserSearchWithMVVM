@@ -19,8 +19,6 @@ final class SearchViewModel {
         self.searchUserResult = CurrentValueSubject(searchUserResult)
     }
     
-    
-    
     // User Action -> Input
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let keyword = searchBar.text else { return }
@@ -74,7 +72,7 @@ final class SearchViewModel {
                     break
                 }
             } receiveValue: { result in
-                currentVC.userInfo = result
+                currentVC.viewModel.userInfo.send(result)
             }
             .store(in: &subscriptions)
         
