@@ -1,6 +1,6 @@
 //
 //  Resource.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
 //
 

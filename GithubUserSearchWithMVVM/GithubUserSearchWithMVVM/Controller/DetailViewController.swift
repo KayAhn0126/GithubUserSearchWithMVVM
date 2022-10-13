@@ -1,8 +1,7 @@
 //
 //  DetailViewController.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
-//  Created by Kay on 2022/09/21.
 //
 
 import UIKit

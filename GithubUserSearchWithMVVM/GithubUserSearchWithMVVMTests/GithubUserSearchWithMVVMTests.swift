@@ -1,13 +1,13 @@
 //
-//  GithubUserSearchTests.swift
-//  GithubUserSearchTests
+//  GithubUserSearchWithMVVMTests.swift
+//  GithubUserSearchWithMVVMTests
 //
 //
 
 import XCTest
-@testable import GithubUserSearch
+@testable import GithubUserSearchWithMVVM
 
-class GithubUserSearchTests: XCTestCase {
+class GithubUserSearchWithMVVMTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

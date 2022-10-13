@@ -19,13 +19,14 @@ class SearchViewController: UIViewController {
     typealias Item = SearchResult
     var datasource: UICollectionViewDiffableDataSource<Section, Item>!
     
-    @Published private(set) var searchUserResult: [SearchResult] = []
     var subscriptions = Set<AnyCancellable>()
+    var viewModel: SearchViewModel!
     
     @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewModel = SearchViewModel()
         createSearchController()
         configureDataSource()
         bind()
@@ -38,7 +39,7 @@ class SearchViewController: UIViewController {
     }
     
     private func bind() {
-        $searchUserResult
+        viewModel.searchUserResult
             .receive(on: RunLoop.main)
             .sink { [unowned self] result in
                 var snapshot = NSDiffableDataSourceSnapshot<Section,Item>()
@@ -89,36 +90,11 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
-        guard let keyword = searchBar.text else { return }
-        let base = "https://api.github.com/"
-        let path = "search/users"
-        let params: [String: String] = ["q": keyword]
-        let header: [String: String] = ["Content-Type": "application/json"]
-        
-        var urlComponents = URLComponents(string: base + path)!
-        let queryItems = params.map { (key: String, value: String) in
-            return URLQueryItem(name: key, value: value)
-        }
-        urlComponents.queryItems = queryItems
-        
-        var request = URLRequest(url: urlComponents.url!)
-        header.forEach { (key: String, value: String) in
-            request.addValue(value, forHTTPHeaderField: key)
-        }
-
-        URLSession.shared.dataTaskPublisher(for: request)
-            .map { $0.data }
-            .decode(type: SearchUserResponse.self, decoder: JSONDecoder())
-            .map { $0.items }
-            .replaceError(with: [])
-            .receive(on: RunLoop.main)
-            .assign(to: \.searchUserResult, on: self)
-            .store(in: &subscriptions)
+        viewModel.searchButtonClicked(searchBar)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section,Item>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.main])
         snapshot.appendItems([], toSection: .main)
         datasource.apply(snapshot)
@@ -127,36 +103,6 @@ extension SearchViewController: UISearchBarDelegate {
 
 extension SearchViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let selectedUserName = searchUserResult[indexPath.item].login
-        
-        let resource = Resource<DetailSearchResult>(
-            base: "https://api.github.com/",
-            path: "users/\(selectedUserName)",
-            params: [:],
-            header: ["Content-Type": "application/json"]
-        )
-        let detailStoryboard = UIStoryboard(name: "Detail", bundle: nil)
-        let currentVC = detailStoryboard.instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
-        
-        let detailNetwork = NetworkService(configuration: .default)
-        detailNetwork.load(resource)
-            .receive(on: RunLoop.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let error):
-                    print("Error Code : \(error)")
-                case .finished:
-                    print("Completed with: \(completion)")
-                    break
-                }
-            } receiveValue: { result in
-                currentVC.userInfo = result
-            }
-            .store(in: &subscriptions)
-        
-        navigationController?.navigationBar.prefersLargeTitles = false
-        currentVC.navigationItem.title = selectedUserName
-        navigationController?.pushViewController(currentVC, animated: true)
+        viewModel.selectedUserToDetail(indexPath, self.self)
     }
 }

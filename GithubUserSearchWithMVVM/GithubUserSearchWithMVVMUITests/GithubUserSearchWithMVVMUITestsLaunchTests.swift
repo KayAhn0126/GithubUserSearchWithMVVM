@@ -1,12 +1,12 @@
 //
-//  GithubUserSearchUITestsLaunchTests.swift
-//  GithubUserSearchUITests
+//  GithubUserSearchWithMVVMUITestsLaunchTests.swift
+//  GithubUserSearchWithMVVMUITests
 //
 //
 
 import XCTest
 
-class GithubUserSearchUITestsLaunchTests: XCTestCase {
+class GithubUserSearchWithMVVMUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

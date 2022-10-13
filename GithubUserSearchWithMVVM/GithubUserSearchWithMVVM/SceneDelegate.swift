@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
 //
 

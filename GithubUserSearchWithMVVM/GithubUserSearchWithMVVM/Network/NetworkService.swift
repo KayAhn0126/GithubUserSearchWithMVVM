@@ -1,6 +1,6 @@
 //
 //  Network.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
 //
 

@@ -1,6 +1,6 @@
 //
 //  ResultCell.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
 //
 

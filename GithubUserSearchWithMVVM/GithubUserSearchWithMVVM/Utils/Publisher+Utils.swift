@@ -1,6 +1,6 @@
 //
 //  Publisher+Utils.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
 //
 

@@ -1,6 +1,6 @@
 //
 //  SearchUserResponse.swift
-//  GithubUserSearch
+//  GithubUserSearchWithMVVM
 //
 //
 
